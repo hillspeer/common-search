@@ -1,4 +1,4 @@
-package com.tuc.search.framework.core;
+package com.tuc.search.core;
 
 public interface Clause {
     String getFieldName();

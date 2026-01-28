@@ -10,6 +10,11 @@ repositories {
 }
 
 dependencies {
+
+    implementation("org.apache.solr:solr-solrj:9.8.1")
+
+    implementation("org.elasticsearch.client:elasticsearch-rest-client:9.1.10")
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
