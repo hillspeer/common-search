@@ -1,78 +1,50 @@
 package com.tuc.search.translator;
 
-import com.tuc.search.core.ClauseVisitor;
-import com.tuc.search.core.SearchQuery;
+import com.tuc.search.core.*;
+import com.tuc.search.translator.QueryTranslator;
+import org.apache.solr.client.solrj.SolrQuery;
 
 import java.util.stream.Collectors;
 
-public class SolrTranslator implements ClauseVisitor<String> {
+public final class SolrTranslator implements QueryTranslator {
 
-    public String translate(SearchQuery query) {
-        // join all top-level clauses with AND by default
+    private SearchQuery query;
+
+    @Override
+    public void setQuery(SearchQuery query) {
+        this.query = query;
+    }
+
+    @Override
+    public String toQueryString() {
+        if (query == null) throw new IllegalStateException("query not set");
+        SolrClauseVisitor visitor = new SolrClauseVisitor();
+        if (query.getClauses().isEmpty()) {
+            return "*:*";
+        }
         return query.getClauses().stream()
-            .map(c -> c.accept(this))
-            .collect(Collectors.joining(" AND "));
+                .map(c -> c.accept(visitor))
+                .collect(Collectors.joining(" AND "));
     }
 
     @Override
-    public String visitTerm(TermClause clause) {
-        // name:jhon, age:21, pincode:600021
-        return clause.getFieldName() + ":" + escapeValue(clause.getValue());
+    public String toJson() {
+        // for Solr you usually just send q + params; JSON here is optional
+        return "{\"q\":\"" + toQueryString() + "\"}";
     }
 
-    @Override
-    public String visitPrefix(PrefixClause clause) {
-        return "";
-    }
+    public SolrQuery buildSolrQuery() {
+        SolrQuery solr = new SolrQuery();
+        solr.setQuery(toQueryString());
 
-    @Override
-    public String visitWildcard(WildcardClause clause) {
-        return "";
-    }
+        Pageable p = query.getPageable();
+        solr.setStart(p.getOffset());
+        solr.setRows(p.getPageSize());
 
-    @Override
-    public String visitMatch(MatchClause clause) {
-        return "";
-    }
-
-    @Override
-    public String visitRange(RangeClause clause) {
-        return "";
-    }
-
-    @Override
-    public String visitBoolean(BooleanClause clause) {
-        // (MUST...) OR (SHOULD...) etc.
-        String mustPart = clause.getMust().stream()
-            .map(c -> c.accept(this))
-            .collect(Collectors.joining(" AND "));
-
-        String shouldPart = clause.getShould().stream()
-            .map(c -> c.accept(this))
-            .collect(Collectors.joining(" OR "));
-
-        List<String> parts = new ArrayList<>();
-        if (!mustPart.isEmpty())   parts.add(mustPart);
-        if (!shouldPart.isEmpty()) parts.add(shouldPart);
-
-        return "(" + String.join(" OR ", parts) + ")";
-    }
-
-    @Override
-    public String visitNested(NestedClause clause) {
-        return "";
-    }
-
-    @Override
-    public String visitFullText(FullTextClause clause) {
-        return "";
-    }
-
-    // other visit* methods (match, range, etc.) omitted
-
-    private String escapeValue(Object v) {
-        // minimal, extend as needed
-        String s = String.valueOf(v);
-        return s.contains(" ") ? "\"" + s + "\"" : s;
+        for (SortField sf : query.getSorts()) {
+            solr.addSort(sf.getField(),
+                    sf.getOrder() == SortOrder.ASC ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+        }
+        return solr;
     }
 }

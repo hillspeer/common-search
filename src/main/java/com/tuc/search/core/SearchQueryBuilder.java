@@ -1,8 +1,7 @@
 package com.tuc.search.core;
 
 import com.tuc.search.aggregation.AggregationSpec;
-import com.tuc.search.clause.BooleanQueryBuilder;
-import com.tuc.search.clause.MatchClause;
+import com.tuc.search.clause.*;
 import com.tuc.search.engine.SearchEngine;
 import com.tuc.search.translator.QueryTranslator;
 import com.tuc.search.translator.QueryTranslatorFactory;
@@ -105,11 +104,11 @@ public class SearchQueryBuilder {
     }
 
     // FULL TEXT SEARCH
-    public SearchQueryBuilder fullText(String field, String query) {
-        validateField(field);
-        clauses.add(new FullTextClause(field, query));
-        return this;
-    }
+//    public SearchQueryBuilder fullText(String field, String query) {
+//        validateField(field);
+//        clauses.add(new FullTextClause(field, query));
+//        return this;
+//    }
 
     // SORTING
     public SearchQueryBuilder sort(String field, SortOrder order) {
@@ -154,17 +153,15 @@ public class SearchQueryBuilder {
         return this;
     }
 
-    // BUILD
     public SearchQuery build() {
-        QueryTranslator translator = QueryTranslatorFactory.getTranslator(engine).get();
+        //QueryTranslator translator = QueryTranslatorFactory.getTranslator(engine).get();
         return new SearchQueryImpl(
             engine,
             Collections.unmodifiableList(clauses),
             Collections.unmodifiableMap(aggregations),
             Collections.unmodifiableList(sorts),
             pageable != null ? pageable : new Pageable(0, 10),
-            Collections.unmodifiableSet(highlightFields),
-            translator
+            Collections.unmodifiableSet(highlightFields)
         );
     }
 

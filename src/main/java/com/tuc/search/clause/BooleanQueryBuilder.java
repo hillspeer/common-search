@@ -2,6 +2,9 @@ package com.tuc.search.clause;
 
 import com.tuc.search.core.Clause;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BooleanQueryBuilder {
     private List<Clause> must = new ArrayList<>();
     private List<Clause> should = new ArrayList<>();

@@ -9,13 +9,19 @@ import java.util.Map;
 import java.util.Set;
 
 public class SearchQueryImpl implements SearchQuery {
-    private final SearchEngine engine = null;
-    private final List<Clause> clauses = List.of();
-    private final Map<String, AggregationSpec> aggregations = null;
-    private final List<SortField> sorts= List.of();
-    private final Pageable pageable = null;
-    private final Set<String> highlightFields = Set.of();
-    private final QueryTranslator translator = null;
+    private  SearchEngine engine = null;
+    private  List<Clause> clauses = List.of();
+    private  Map<String, AggregationSpec> aggregations = null;
+    private  List<SortField> sorts= List.of();
+    private  Pageable pageable = null;
+    private  Set<String> highlightFields = Set.of();
+    private  QueryTranslator translator = null;
+
+    public <T, K, V> SearchQueryImpl(SearchEngine engine, List<T> ts, Map<K,V> kvMap, List<T> ts1, Pageable pageable, Set<T> ts2) {
+        this.engine = engine;
+
+
+    }
 
     @Override
     public String toQueryString() {

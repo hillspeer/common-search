@@ -1,5 +1,11 @@
 package com.tuc.search.clause;
 
+import com.tuc.search.core.Clause;
+import com.tuc.search.core.ClauseVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class NestedClause implements Clause {
     private final String path;
     private final List<Clause> innerClauses;
@@ -15,7 +21,7 @@ public class NestedClause implements Clause {
     }
 
     @Override
-    public ClauseType getType() {
+    public Clause.ClauseType getType() {
         return ClauseType.NESTED;
     }
 

@@ -1,5 +1,8 @@
 package com.tuc.search.clause;
 
+import com.tuc.search.core.Clause;
+import com.tuc.search.core.ClauseVisitor;
+
 public class FullTextClause implements Clause {
     private final String fieldName;
     private final String query;
@@ -18,12 +21,12 @@ public class FullTextClause implements Clause {
 
     @Override
     public ClauseType getType() {
-        return ClauseType.FULL_TEXT;
+        return Clause.ClauseType.FULL_TEXT;
     }
 
     @Override
     public <T> T accept(ClauseVisitor<T> visitor) {
-        return visitor.visitFullText(this);
+        return null;//visitor.visitFullText(this);
     }
 
     public String getQuery() { return query; }

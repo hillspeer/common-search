@@ -1,9 +1,16 @@
 package com.tuc.search;
 
+import com.tuc.search.clause.MatchClause;
+import com.tuc.search.clause.RangeOperator;
+import com.tuc.search.clause.TermClause;
 import com.tuc.search.core.SearchQuery;
 import com.tuc.search.core.SearchQueryBuilder;
+import com.tuc.search.core.SortOrder;
 import com.tuc.search.engine.SearchEngine;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SearchQueryBuilderTest {
@@ -24,7 +31,7 @@ class SearchQueryBuilderTest {
         SearchQuery query = SearchQueryBuilder
             .forEngine(SearchEngine.SOLR)
             .bool(bool -> bool
-                .must(new MatchClauzzzzzzzzzzzzzzzse("title", "database"))
+                .must(new MatchClause("title", "database"))
                 .should(new MatchClause("tags", "sql"))
                 .filter(new TermClause("status", "published"))
             )

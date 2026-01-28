@@ -1,5 +1,8 @@
 package com.tuc.search.clause;
 
+import com.tuc.search.core.Clause;
+import com.tuc.search.core.ClauseVisitor;
+
 public class RangeClause implements Clause {
     private final String fieldName;
     private final Object from;
@@ -34,6 +37,7 @@ public class RangeClause implements Clause {
     public ClauseType getType() {
         return ClauseType.RANGE;
     }
+
 
     @Override
     public <T> T accept(ClauseVisitor<T> visitor) {
